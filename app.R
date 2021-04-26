@@ -17,21 +17,46 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
     navbarPage(title = NULL,
         # Rubric creation menu
         tabPanel("RÚBRICA",
-                 fileInput("items.file",
-                           "Elegir un fichero CSV con los ítems de la rúbrica",
+                 fluidRow(
+                    # Exam name
+                    column(6, textInput('examName', 'Nombre del examen', value = paste0("Examen-", Sys.Date()))),
+                    # Load items
+                    column(6, fileInput("items.file",
+                               "Elegir un fichero CSV con los ítems de la rúbrica",
+                               multiple = F,
+                               accept=c('text/csv', 
+                                        'text/comma-separated-values,text/plain', 
+                                        '.csv'),
+                               buttonLabel = "Explorar...",
+                               width = '400px'))
+                    ),
+                 textOutput("text1"),
+                 # Items table
+                 DT::dataTableOutput("itemsTable"),
+                 # Rubric summary table
+                 tableOutput("itemsSummary"),
+                 # Download rubric items
+                 uiOutput("downloadRubricButton")
+        ),
+        tabPanel("ALUMNOS",
+                 # Load students
+                 fileInput("students.file",
+                           "Elegir un fichero CSV con los alumnos del grupo (formato Blackboard).",
                            multiple = F,
                            accept=c('text/csv', 
                                     'text/comma-separated-values,text/plain', 
                                     '.csv'),
                            buttonLabel = "Explorar...",
-                           width = '400px'),
-                 textOutput("text1"),
-                 DT::dataTableOutput("itemsTable"),
+                           width = '500px'),
+   
+                 # Students table
+                 DT::dataTableOutput("studentsTable"),
                  # Download rubric items
-                 uiOutput("downloadRubricButton")
+                 uiOutput("downloadRubricTemplateButton")
         ),
+        
         # Data loading menu
-        tabPanel("CARGA DE DATOS", 
+        tabPanel("CORRECCIÓN", 
                  fileInput("data.file",
                            "Elegir un fichero CSV con las puntuaciones de la rúbrica",
                            multiple = F,
@@ -69,7 +94,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                      uiOutput("selectStudent", inline = T),  
                      # Grade
                      htmlOutput("grade", inline = T)),
-                 # Evaluación table
+                 # Assessment table
                  tableOutput("studentReport"),
                  column(12, align="center", plotOutput('boxplot', width = "800px"), offset = 0),
                  htmlOutput("Comments")
@@ -80,6 +105,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
 # Define server logic required to draw a histogram
 
 server <- function(input, output) {
+    # Load items data set
     data.items <- reactive({
         inFile <- input$items.file
         if (is.null(inFile))
@@ -88,26 +114,47 @@ server <- function(input, output) {
         return(data)
     })
     
+    # Show text and download button
     observeEvent(input$items.file, {
-        output$text1 <- renderText('Selecciona los items que deseas para la rúbrica.')
+        output$text1 <- renderText('Selecciona los ítems que deseas para la rúbrica.')
         output$downloadRubricButton <- renderUI(
             downloadButton("downloadRubric", "Descargar rúbrica", class = "btn-primary")
         )
     })
     
+    # Show items table
     output$itemsTable <-  DT::renderDataTable(data.items(), 
                                               options = list(
                                                   language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                                                  pageLength = 20, 
+                                                  pageLength = 10, 
                                                   autoWidth = FALSE))
     
+    selected.items <- eventReactive(input$itemsTable_rows_selected, {
+        data.items()[input$itemsTable_rows_selected, ]
+    })
     
-    # Downdoad rubric
+    # Show text and download button
+    observeEvent(input$items.file, {
+        output$text1 <- renderText('Selecciona los ítems que deseas para la rúbrica.')
+        output$downloadRubricButton <- renderUI(
+            downloadButton("downloadRubric", "Descargar rúbrica", class = "btn-primary")
+        )
+    })
+    
+    # Items summary
+    output$itemsSummary <- renderTable({
+        if (length(input$itemsTable_rows_selected)){
+            selected.items() %>% 
+                group_by(Tema) %>%
+                summarise(`Peso Acumulado`= sum(Peso))
+        }
+    })
+    
+    # Download rubric
     output$downloadRubric <- downloadHandler(
-        filename = "rubrica.csv",
+        filename = paste0(input$examName, "-rubrica.csv"),
         content = function(file) {
-            rubric <- as_tibble(data.items()[input$itemsTable_rows_selected, ])
-            rubric <- rubric %>%
+            rubric <- selected.items() %>%
                 pivot_wider(id_cols=c(), names_from = Ítem, values_from = Peso) %>%
                 add_column(Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado)
@@ -115,7 +162,46 @@ server <- function(input, output) {
         }
     )
     
-    dataset <- reactive({
+    # Load items data set
+    data.students <- reactive({
+        inFile <- input$students.file
+        if (is.null(inFile))
+            return(NULL)
+        data <- read_csv(inFile$datapath)
+        return(data %>% select(c(Apellidos, Nombre, `Nombre de usuario`)))
+    })
+    
+    # Show students table
+    output$studentsTable <-  DT::renderDataTable(data.students(),
+                                              options = list(
+                                                  language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+                                                  pageLength = 15, 
+                                                  autoWidth = FALSE))
+    
+    # Show download button
+    observeEvent(input$items.file, {
+        output$downloadRubricTemplateButton <- renderUI(
+            downloadButton("downloadRubricTemplate", "Descargar plantilla de rúbrica", class = "btn-primary")
+        )
+    })
+    
+    # Download rubric
+    output$downloadRubricTemplate <- downloadHandler(
+        filename = paste0(input$examName, "-plantilla.csv"),
+        content = function(file) {
+            rubric <- selected.items() %>%
+                pivot_wider(id_cols=c(), names_from = Ítem, values_from = Peso) %>%
+                add_column(Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
+                relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%
+                # Add students
+                add_row( data.students()) %>%
+                mutate_all(funs(replace_na(., "")))
+            write.csv(rubric, file, row.names = F)
+        }
+    )
+    
+    # Load correction data set
+    data.corrections <- reactive({
         inFile <- input$data.file
         if (is.null(inFile))
             return(NULL)
@@ -136,15 +222,15 @@ server <- function(input, output) {
     
     
     # Show loaded data
-    output$dataTable <- DT::renderDataTable(dataset(), 
+    output$dataTable <- DT::renderDataTable(data.corrections(), 
                                         options = list(language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                                                       pageLength = 20,
+                                                       pageLength = 15,
                                                        autoWidth = FALSE))
     
     # Compute grades
     grades <- reactive({
         req(input$data.file)
-        data <- dataset()
+        data <- data.corrections()
         # Compute the grades
         grades <- data %>%
             # Replace NAs by 0
@@ -161,7 +247,7 @@ server <- function(input, output) {
     # Show grades
     output$gradesTable <- DT::renderDataTable(grades(), 
                                               options = list(language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-                                                             pageLength = 20, 
+                                                             pageLength = 15, 
                                                              autoWidth = FALSE))
 
     # Downdoad grades
@@ -177,7 +263,7 @@ server <- function(input, output) {
     output$histogram <- renderPlot({
         ggplot(grades(), aes(x=Nota)) + 
             geom_histogram(breaks=seq(0, 10, by = 1), fill=rgb(5, 161, 230, maxColorValue = 255), color='white') +
-            labs(title="Distribución de notas") +
+            labs(title=paste("Distribución de notas", input$examName)) +
             labs(y="Estudiantes") + 
             scale_x_continuous(breaks=seq(0, 10, 1)) +
             theme(title = element_text(size=18),
@@ -205,12 +291,12 @@ server <- function(input, output) {
     # Show select input for students
     output$selectStudent <- renderUI(
         selectInput("student","Seleccionar estudiante", choices=
-                        as.character(unique(unlist(dataset()$Apellidos))))
+                        as.character(unique(unlist(data.corrections()$Apellidos))))
     )
 
     # Get selected student data
     data.student <- eventReactive(input$student, {
-        data <- dataset()
+        data <- data.corrections()
         data.student <- data %>% filter(Apellidos == input$student) %>%
             # Convert Conseguido to numeric
             mutate(Evaluación = as.numeric(Evaluación)) %>%
@@ -231,7 +317,7 @@ server <- function(input, output) {
         h3(paste("Nota: ", round(grade, 1)))
     })
 
-    # Show student Puntoss
+    # Show student Score
     output$studentReport <- function() {
         req(input$student)
         data.student <- data.student()
@@ -273,7 +359,7 @@ server <- function(input, output) {
             tmpdir <- tempdir()
             tempReport <- file.path(tmpdir, "evaluacion.Rmd")
             file.copy("evaluacion.Rmd", tempReport, overwrite = TRUE)
-            data <- dataset()
+            data <- data.corrections()
             files <- c()
             setwd(tmpdir)
             withProgress(message = 'Generando informes de evaluación', value = 0, {
@@ -293,7 +379,7 @@ server <- function(input, output) {
                         student.name <- paste0(data.student$Apellidos[1], ', ', data.student$Nombre[1])
                         output.file <-  paste0("evaluacion ", student.name, ".html")
                         files <- c(files, paste0(output.file))
-                        params <- list(data.student = data.student, grades = grades())
+                        params <- list(title = input$examName, data.student = data.student, grades = grades())
                         rmarkdown::render(tempReport,
                                           output_file = output.file,
                                           output_dir = tmpdir,
@@ -314,3 +400,6 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
+

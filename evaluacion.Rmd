@@ -1,9 +1,10 @@
 ---
-title: 'Evaluación'
 output: html_document
-params: 
+params:
+  title: NA
   data.student: NA
   grades: NA
+title: "`r paste('Evaluación', params$title)`"
 ---
 
 ```{r setup, include=FALSE}
