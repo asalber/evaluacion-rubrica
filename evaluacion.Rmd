@@ -1,0 +1,49 @@
+---
+title: 'Evaluación'
+output: html_document
+params: 
+  data.student: NA
+  grades: NA
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, cache=F, prompt=FALSE, tidy=TRUE, comment=NA, message=FALSE, warning=FALSE)
+```
+
+```{r packages}
+library(dplyr)
+library(kableExtra)
+```
+
+
+```{r data preparation}
+# Compute the grade
+data.student <- as_tibble(params$data.student)
+total.weight <- sum(data.student$Peso)
+grade <- sum(data.student$Puntos) / total.weight * 10
+```
+
+### Estudiante: `r paste(data.student$Nombre[1], data.student$Apellidos[1])`
+
+### Nota: `r round(grade, 1)`
+
+```{r items table}
+data.student %>% 
+  mutate(Conseguido = cell_spec(Conseguido, "html", color = if_else(Conseguido == "Si", "green", if_else(Conseguido == "Parcialmente", "orange", "red")))) %>%
+  select(Ítem, Peso, Conseguido, Puntos) %>%
+  kbl(format = "html", escape = F, align = c("l", "c", "c", "c")) %>% 
+  kable_styling(bootstrap_options = c("striped"), full_width = F)
+```
+
+```{r boxplot}
+grades <- params$grades
+boxplot(grades$Nota, horizontal = T, col = rgb(5, 161, 230, maxColorValue = 255), main = "Distribución de notas", yaxt="n", ylim = c(0,10))
+axis(1, at = 0:10)
+text(x=grade, y=1.1, labels="Tú")
+points(grade, 1, col="red", pch=19)
+```
+
+```{r comments, echo=F, results="asis"}
+cat(if_else(is.na(data.student$Comentarios[1]), "", paste("<h3>Comentarios</h3><p>", data.student$Comentarios[1], "</p>")))
+```
+

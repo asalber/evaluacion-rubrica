@@ -1,0 +1,32 @@
+Apellidos,Nombre,Nombre de usuario,Presentado,Get the frequency distribution from a frequency chart,Compute the quartiles from the frequency table for non-grouped data,Compute the interquartile range,Compute the fences,Detect outliers,Draw the box and whiskers plot,Interpret the box and whiskers plot,Compute the mean from sums,Compute the median from the frequency table for non-grouped data,Compute the mode from the frequency table,Compute the variance from sums,Compute the standard deviation,Compute the coef of skewness from sums,Interpret the coef of skewness,Compute the coef of kurtosis from sums,Interpret the coef of kurtosis,Check if the sample comes from a normal population,Compute the coef of variation,Compare the relative dispersion of two samples,Apply standardization,Compare the standard scores,Compute the covariance,Interpret the covariance,Compute the coef of regression,Interpret the coef of regression,Identify the roles (dependent or independent) of variables in a regression model,Compute the regression line,Compute a logarithmic regression model,Make predictions with regression models,Compute the coef of determination,Compare the goodness of fit of two regression models,Compute an exponential regression model,"Interpret the reliability of a prediction depending on the coef of determination, the sample size and the range of values in the sample",Comentarios
+PESO,,,,3,2,1,1,1,1,1,2,2,1,2,1,2,2,2,2,2,2,3,2,2,2,2,2,2,3,3,3,1,2,3,3,3,
+Beltzer,Meaghan,m.beltzer@usp.ceu.es,S,,1,1,1,1,0.5,,1,,1,1,1,,1,,1,1,1,,,,1,,1,1,1,1,1,1,1,1,,,
+Brizard,Zoe,b.zoe@usp.ceu.es,S,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,
+Bær,Bendik,b.baro@usp.ceu.es,S,1,1,1,,1,1,,1,1,1,,1,,,,,,1,,,,,,,,,0.5,,,,,,,"You have trouble to apply the formulas for the variance, coef of skewness and coef of kurtosis."
+Carpentier,"Isaure, Agathe",i.carpentier@usp.ceu.es,S,,,,,,0.5,,1,,,1,1,1,,1,,1,1,1,1,1,1,,1,1,1,1,,0.5,,,,,
+Cebado Schreiber,Ricardo,r.cebadoschreiber@usp.ceu.es,S,,,,,,,,1,1,1,,,1,,1,,,,,,,,,,,,,,,,,,,
+Dayoub,Eva Rafik Robert,e.dayoub@usp.ceu.es,S,,,1,1,,0.5,,1,,,1,1,1,,1,,1,1,,1,,1,,,,1,1,0.5,1,1,1,,,
+Dubois,Kevin Guillaume Alexandre,k.dubois@usp.ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Enée,"Alexandre  Michael, Jacques",a.enee@usp.ceu.es,S,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,,,,
+Gaddacha,Adam,a.gaddacha@usp.ceu.es,S,0.5,1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,,,1,,,,,1,,1,,,,,
+Giacomini,Manon,m.giacomini@usp.ceu.es,S,1,1,1,1,1,1,1,1,1,,1,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+Glade,"Léa, Hortense",l.glade@usp.ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Griffoulière Dominique Romain,Martin,m.griffouliere@usp.ceu.es,S,0.5,1,1,,,0.5,,1,1,1,,,,,,,,,,,,1,,,,,,,,,,,,
+Halilhodzic,Vanio,h.vanio@usp.ceu.es,S,0.5,1,1,1,,0.5,,1,1,1,0.5,1,,,,,,1,,,,1,1,,,0.5,1,1,1,1,1,1,1,
+Hebert,Michaêlla Alianne Germaine,j.pley@usp.ceu.es,S,1,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,1,,1,1,,,,,,,,,,,,,
+Hemery,Katel Heloise,k.hemery@usp.ceu.es,S,1,1,1,1,,0.5,,1,,1,1,1,1,1,1,1,1,0.5,,0.5,1,1,,1,1,1,1,1,1,1,1,1,0.5,
+Jameson,Jardar,j.jameson@usp.ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Malenya Musanga,Margaret,m.malenya@usp.ceu.es,S,0.5,,1,1,1,,,1,,,1,1,,,,,,,,,0.5,1,,1,1,1,1,,1,,,,,
+Miqueu,Camille,m.camille@usp.ceu.es,S,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,1,1,1,1,,1,1,1,,,
+Miqueu,Félix Jean Ramuntxo,f.miqueu@usp.ceu.es,S,,0.5,1,1,,0.5,,1,0.5,,1,1,1,1,1,1,1,1,0.5,,,0,,0,0,,0,,0,,,,,You have made a big mistake because a variance can not be negative. So I have canceled the second exercise.
+Mronz,Laura Johanna Myriam,l.mronz@usp.ceu.es,S,1,1,1,1,,1,,1,1,1,1,1,1,1,1,1,1,1,0.5,1,1,1,1,1,1,0.5,1,1,1,1,1,,0.5,
+Peeva,"Karina, Hristova",k.peeva@usp.ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Rifai,Tina Imane,ti.rifai@usp.ceu.es,S,,,,1,1,0.5,,1,,,0.5,1,1,1,1,1,1,1,,0.5,,1,,,,,1,1,1,1,,,,
+Sambogna,Federica,f.sambogna@usp.ceu.es,S,,,,,,,,1,,,1,,,,,,,,,,,1,1,,,0.5,1,0.5,,,,,,
+Schipani,Francesca,f.schipani2@usp.ceu.es,S,1,1,1,1,,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,,0,0,0,0,0,0,0,0,0,,,,You have made a big mistake because the coef of determination can not be greater than 1. So I have canceled the second exercise.
+Sella,Cecilia,c.sella@usp.ceu.es,S,0.5,1,1,,,0.5,,1,,,1,1,1,1,1,1,,1,,0.5,1,0,,0,,0,0,0,0,0,0,0,,You have made a big mistake because a variance can not be negative. So I have canceled the second exercise.
+Sokersson,Sabah,s.sokersson@usp.ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Thibault Marc,Lanly,l.thibault@usp.ceu.es,S,0.5,0.5,1,1,,0.5,,1,,,1,1,1,1,1,1,0.5,1,1,1,1,1,,,,1,1,0.5,0.5,1,1,,,
+Théo,Battalian,b.theo@usp.ceu.es,S,,1,1,1,1,0.5,,1,,,,1,1,1,0.5,,,1,1,0.5,,0.5,,,,,0.5,,,,,,,You did not use the sums that I gave you in the exercises.
+Voisin,Aurore,aurore.voisin@usp.ceu.es,S,1,1,1,1,1,1,1,1,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+Zabala Zambrano,Jesus Fabricio,jf.zabala@usp.ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
