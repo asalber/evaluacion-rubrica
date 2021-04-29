@@ -191,7 +191,7 @@ server <- function(input, output) {
         content = function(file) {
             rubric <- selected.items() %>%
                 pivot_wider(id_cols=c(), names_from = Ítem, values_from = Peso) %>%
-                add_column(Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
+                add_column(Comentarios = "", Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%
                 # Add students
                 add_row( data.students()) %>%
@@ -291,7 +291,7 @@ server <- function(input, output) {
     # Show select input for students
     output$selectStudent <- renderUI(
         selectInput("student","Seleccionar estudiante", choices=
-                        as.character(unique(unlist(data.corrections()$Apellidos))))
+                        as.character(unique(unlist(data.corrections() %>% filter(Presentado == "S") %>% pull(Apellidos)))))
     )
 
     # Get selected student data
@@ -333,7 +333,8 @@ server <- function(input, output) {
         req(input$student)
         grades <- grades()
         grade <- grades %>% filter(Apellidos == input$student) %>% pull(Nota)
-        boxplot(grades$Nota, horizontal = T, col = rgb(5, 161, 230, maxColorValue = 255), main = "Distribución de notas")
+        boxplot(grades$Nota, horizontal = T, col = rgb(5, 161, 230, maxColorValue = 255), main = "Distribución de notas", yaxt="n", ylim = c(0,10))
+        axis(1, at = 0:10)
         text(x = grade, y = 1.1, labels = "Tú")
         points(grade, 1, col = "red", pch = 19)
     })
