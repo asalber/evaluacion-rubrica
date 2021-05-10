@@ -22,7 +22,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                     column(6, textInput('examName', 'Nombre del examen', value = paste0("Examen-", Sys.Date()))),
                     # Load items
                     column(6, fileInput("items.file",
-                               "Elegir un fichero CSV con los ítems de la rúbrica",
+                               "Elegir un fichero CSV con los Items de la rúbrica",
                                multiple = F,
                                accept=c('text/csv', 
                                         'text/comma-separated-values,text/plain', 
@@ -110,35 +110,29 @@ server <- function(input, output) {
         inFile <- input$items.file
         if (is.null(inFile))
             return(NULL)
-        data <- read_csv(inFile$datapath)
+        # Get the encoding of the file (specially for Windows systems)
+        encoding <- unlist(guess_encoding(inFile$datapath))[1]
+        data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
         return(data)
     })
     
     # Show text and download button
     observeEvent(input$items.file, {
-        output$text1 <- renderText('Selecciona los ítems que deseas para la rúbrica.')
+        output$text1 <- renderText('Selecciona los Items que deseas para la rúbrica.')
         output$downloadRubricButton <- renderUI(
             downloadButton("downloadRubric", "Descargar rúbrica", class = "btn-primary")
         )
     })
     
     # Show items table
-    output$itemsTable <-  DT::renderDataTable(data.items(), 
-                                              options = list(
+    output$itemsTable <- renderDataTable(data.items(), 
+                                         options = list(
                                                   language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
                                                   pageLength = 10, 
                                                   autoWidth = FALSE))
     
     selected.items <- eventReactive(input$itemsTable_rows_selected, {
         data.items()[input$itemsTable_rows_selected, ]
-    })
-    
-    # Show text and download button
-    observeEvent(input$items.file, {
-        output$text1 <- renderText('Selecciona los ítems que deseas para la rúbrica.')
-        output$downloadRubricButton <- renderUI(
-            downloadButton("downloadRubric", "Descargar rúbrica", class = "btn-primary")
-        )
     })
     
     # Items summary
@@ -155,10 +149,10 @@ server <- function(input, output) {
         filename = paste0(input$examName, "-rubrica.csv"),
         content = function(file) {
             rubric <- selected.items() %>%
-                pivot_wider(id_cols=c(), names_from = Ítem, values_from = Peso) %>%
+                pivot_wider(id_cols=c(), names_from = Item, values_from = Peso) %>%
                 add_column(Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado)
-            write.csv(rubric, file, row.names = F)
+            write_csv2(rubric, file)
         }
     )
     
@@ -190,13 +184,13 @@ server <- function(input, output) {
         filename = paste0(input$examName, "-plantilla.csv"),
         content = function(file) {
             rubric <- selected.items() %>%
-                pivot_wider(id_cols=c(), names_from = Ítem, values_from = Peso) %>%
+                pivot_wider(id_cols=c(), names_from = Item, values_from = Peso) %>%
                 add_column(Comentarios = "", Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%
                 # Add students
                 add_row( data.students()) %>%
                 mutate_all(funs(replace_na(., "")))
-            write.csv(rubric, file, row.names = F)
+            write_csv2(rubric, file)
         }
     )
     
@@ -205,19 +199,19 @@ server <- function(input, output) {
         inFile <- input$data.file
         if (is.null(inFile))
             return(NULL)
-        data <- read_csv(inFile$datapath)
+        data <- read_csv2(inFile$datapath)
         
         # Extract the weights of the questions
         weights <- data %>%
             filter(Apellidos == "PESO") %>%
             select(-c(Nombre, Apellidos, `Nombre de usuario`, Presentado, Comentarios)) %>%
-            pivot_longer(cols = everything(), names_to = "Ítem", values_to = "Peso")
+            pivot_longer(cols = everything(), names_to = "Item", values_to = "Peso")
         # Pivot data table
         data <- data %>%
             filter(Apellidos != "PESO") %>%
-            pivot_longer(cols = -c(Nombre, Apellidos, `Nombre de usuario`, Presentado, Comentarios), names_to = "Ítem", values_to = "Evaluación") %>%
+            pivot_longer(cols = -c(Nombre, Apellidos, `Nombre de usuario`, Presentado, Comentarios), names_to = "Item", values_to = "Evaluación") %>%
             # Combine with weights
-            left_join(weights, by = "Ítem") 
+            left_join(weights, by = "Item") 
     })
     
     
@@ -255,7 +249,7 @@ server <- function(input, output) {
         filename = "notas.csv",
         content = function(file) {
             grade <- grades() %>% replace_na(list(Nota = ''))
-            write.csv(grade, file, row.names = F)
+            write_csv(grade, file)
         }
     )
     
@@ -323,7 +317,7 @@ server <- function(input, output) {
         data.student <- data.student()
         data.student %>%
             mutate(Conseguido = cell_spec(Conseguido, "html", color = if_else(Conseguido == "Si", "green", if_else(Conseguido == "Parcialmente", "orange", "red")))) %>%
-            select(Ítem, Peso, Conseguido, Puntos) %>%
+            select(Item, Peso, Conseguido, Puntos) %>%
             kable(format = "html", escape = F, align = c("l", "c", "c", "c")) %>%
             kable_styling(bootstrap_options = c("striped"), full_width = F)
     }
