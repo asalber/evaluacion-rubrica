@@ -97,7 +97,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                  # Assessment table
                  tableOutput("studentReport"),
                  column(12, align="center", plotOutput('boxplot', width = "800px"), offset = 0),
-                 htmlOutput("Comments")
+                 htmlOutput("comments")
         )
     )
 )
@@ -105,14 +105,23 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
 # Define server logic required to draw a histogram
 
 server <- function(input, output) {
+    # Encoding
+    encoding <- reactive({
+        encoding <- unlist(guess_encoding(input$items.file$datapath))[1]
+        return(encoding)
+    })
+    
     # Load items data set
     data.items <- reactive({
         inFile <- input$items.file
         if (is.null(inFile))
             return(NULL)
         # Get the encoding of the file (specially for Windows systems)
-        encoding <- unlist(guess_encoding(inFile$datapath))[1]
-        data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
+        encoding <- encoding()
+        if (encoding == "ISO-8859-1")
+            data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
+        else 
+            data <- read_csv(inFile$datapath, locale = locale(encoding = encoding))
         return(data)
     })
     
@@ -152,7 +161,11 @@ server <- function(input, output) {
                 pivot_wider(id_cols=c(), names_from = Item, values_from = Peso) %>%
                 add_column(Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado)
-            write_csv2(rubric, file)
+            encoding <- encoding()
+            if (encoding == "ISO-8859-1")
+                write_csv2(rubric, file)
+            else
+                write_csv(rubric, file)
         }
     )
     
@@ -190,7 +203,11 @@ server <- function(input, output) {
                 # Add students
                 add_row( data.students()) %>%
                 mutate_all(funs(replace_na(., "")))
-            write_csv2(rubric, file)
+            encoding <- encoding()
+            if (encoding == "ISO-8859-1")
+                write_csv2(rubric, file)
+            else
+                write_csv(rubric, file)
         }
     )
     
@@ -199,8 +216,11 @@ server <- function(input, output) {
         inFile <- input$data.file
         if (is.null(inFile))
             return(NULL)
-        data <- read_csv2(inFile$datapath)
-        
+        encoding <- encoding()
+        if (encoding == "ISO-8859-1")
+            data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
+        else 
+            data <- read_csv(inFile$datapath, locale = locale(encoding = encoding))
         # Extract the weights of the questions
         weights <- data %>%
             filter(Apellidos == "PESO") %>%
@@ -211,7 +231,8 @@ server <- function(input, output) {
             filter(Apellidos != "PESO") %>%
             pivot_longer(cols = -c(Nombre, Apellidos, `Nombre de usuario`, Presentado, Comentarios), names_to = "Item", values_to = "Evaluación") %>%
             # Combine with weights
-            left_join(weights, by = "Item") 
+            left_join(weights, by = "Item")
+        return(data)
     })
     
     
@@ -246,10 +267,14 @@ server <- function(input, output) {
 
     # Downdoad grades
     output$downloadGrades <- downloadHandler(
-        filename = "notas.csv",
+        filename = paste0(input$examName, "-notas.csv"),
         content = function(file) {
             grade <- grades() %>% replace_na(list(Nota = ''))
-            write_csv(grade, file)
+            encoding <- encoding()
+            if (encoding == "ISO-8859-1")
+                write_csv2(grade, file)
+            else
+                write_csv(grade, file)
         }
     )
     
@@ -333,8 +358,8 @@ server <- function(input, output) {
         points(grade, 1, col = "red", pch = 19)
     })
     
-    # Show Comments
-    output$Comments <- renderUI({
+    # Show comments
+    output$comments <- renderUI({
         req(input$student)
         grades <- grades()
         grade <- grades %>% filter(Apellidos == input$student) %>% pull(Nota)
