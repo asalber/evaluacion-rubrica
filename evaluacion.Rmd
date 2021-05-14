@@ -31,7 +31,7 @@ grade <- sum(data.student$Puntos) / total.weight * 10
 ```{r items table}
 data.student %>% 
   mutate(Conseguido = cell_spec(Conseguido, "html", color = if_else(Conseguido == "Si", "green", if_else(Conseguido == "Parcialmente", "orange", "red")))) %>%
-  select(Ítem, Peso, Conseguido, Puntos) %>%
+  select(Item, Peso, Conseguido, Puntos) %>%
   kbl(format = "html", escape = F, align = c("l", "c", "c", "c")) %>% 
   kable_styling(bootstrap_options = c("striped"), full_width = F)
 ```

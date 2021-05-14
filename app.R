@@ -57,7 +57,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
         
         # Data loading menu
         tabPanel("CORRECCIÓN", 
-                 fileInput("data.file",
+                 fileInput("assessment.file",
                            "Elegir un fichero CSV con las puntuaciones de la rúbrica",
                            multiple = F,
                            accept=c('text/csv', 
@@ -105,8 +105,8 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
 # Define server logic required to draw a histogram
 
 server <- function(input, output) {
-    # Encoding
-    encoding <- reactive({
+    # Encoding items
+    encoding.items <- reactive({
         encoding <- unlist(guess_encoding(input$items.file$datapath))[1]
         return(encoding)
     })
@@ -117,7 +117,7 @@ server <- function(input, output) {
         if (is.null(inFile))
             return(NULL)
         # Get the encoding of the file (specially for Windows systems)
-        encoding <- encoding()
+        encoding <- encoding.items()
         if (encoding == "ISO-8859-1")
             data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
         else 
@@ -161,7 +161,7 @@ server <- function(input, output) {
                 pivot_wider(id_cols=c(), names_from = Item, values_from = Peso) %>%
                 add_column(Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado)
-            encoding <- encoding()
+            encoding <- encoding.items()
             if (encoding == "ISO-8859-1")
                 write_csv2(rubric, file)
             else
@@ -203,7 +203,7 @@ server <- function(input, output) {
                 # Add students
                 add_row( data.students()) %>%
                 mutate_all(funs(replace_na(., "")))
-            encoding <- encoding()
+            encoding <- encoding.items()
             if (encoding == "ISO-8859-1")
                 write_csv2(rubric, file)
             else
@@ -211,12 +211,18 @@ server <- function(input, output) {
         }
     )
     
+    # Encoding correction
+    encoding.assessment <- reactive({
+        encoding <- unlist(guess_encoding(input$assessment.file$datapath))[1]
+        return(encoding)
+    })
+    
     # Load correction data set
-    data.corrections <- reactive({
-        inFile <- input$data.file
+    data.assessment <- reactive({
+        inFile <- input$assessment.file
         if (is.null(inFile))
             return(NULL)
-        encoding <- encoding()
+        encoding <- encoding.assessment()
         if (encoding == "ISO-8859-1")
             data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
         else 
@@ -237,15 +243,15 @@ server <- function(input, output) {
     
     
     # Show loaded data
-    output$dataTable <- DT::renderDataTable(data.corrections(), 
+    output$dataTable <- DT::renderDataTable(data.assessment(), 
                                         options = list(language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
                                                        pageLength = 15,
                                                        autoWidth = FALSE))
     
     # Compute grades
     grades <- reactive({
-        req(input$data.file)
-        data <- data.corrections()
+        req(input$assessment.file)
+        data <- data.assessment()
         # Compute the grades
         grades <- data %>%
             # Replace NAs by 0
@@ -270,11 +276,7 @@ server <- function(input, output) {
         filename = paste0(input$examName, "-notas.csv"),
         content = function(file) {
             grade <- grades() %>% replace_na(list(Nota = ''))
-            encoding <- encoding()
-            if (encoding == "ISO-8859-1")
-                write_csv2(grade, file)
-            else
-                write_csv(grade, file)
+            write_csv(grade, file)
         }
     )
     
@@ -310,12 +312,12 @@ server <- function(input, output) {
     # Show select input for students
     output$selectStudent <- renderUI(
         selectInput("student","Seleccionar estudiante", choices=
-                        as.character(unique(unlist(data.corrections() %>% filter(Presentado == "S") %>% pull(Apellidos)))))
+                        as.character(unique(unlist(data.assessment() %>% filter(Presentado == "S") %>% pull(Apellidos)))))
     )
 
     # Get selected student data
     data.student <- eventReactive(input$student, {
-        data <- data.corrections()
+        data <- data.assessment()
         data.student <- data %>% filter(Apellidos == input$student) %>%
             # Convert Conseguido to numeric
             mutate(Evaluación = as.numeric(Evaluación)) %>%
@@ -324,7 +326,7 @@ server <- function(input, output) {
             # Add a new columns with the Puntos
             mutate(Puntos = Peso * Evaluación) %>%
             # Add a new column with Achivement
-            mutate(Conseguido = recode(Evaluación, "0" = "No", "0.5" = "Parcialmente", "1.0" = "Si"))
+            mutate(Conseguido = recode(Evaluación, "0" = "No", "0.25" = "Parcialmente", "0.5" = "Parcialmente", "0.75" = "Parcialmente", "1.0" = "Si"))
         return(data.student)
     })
 
@@ -371,7 +373,6 @@ server <- function(input, output) {
     output$downloadReports <- downloadHandler(
         # For PDF output, change this to "report.pdf"
         filename = "evaluaciones.zip",
-        
         content = function(file) {
             # Copy the report file to a temporary directory before processing it, in
             # case we don't have write permissions to the current working dir (which
@@ -379,7 +380,7 @@ server <- function(input, output) {
             tmpdir <- tempdir()
             tempReport <- file.path(tmpdir, "evaluacion.Rmd")
             file.copy("evaluacion.Rmd", tempReport, overwrite = TRUE)
-            data <- data.corrections()
+            data <- data.assessment()
             files <- c()
             setwd(tmpdir)
             withProgress(message = 'Generando informes de evaluación', value = 0, {
@@ -394,7 +395,7 @@ server <- function(input, output) {
                         # Add a new columns with the Puntos
                         mutate(Puntos = Peso * Evaluación) %>%
                         # Add a new column with Achivement
-                        mutate(Conseguido = recode(Evaluación, "0" = "No", "0.5" = "Parcialmente", "1.0" = "Si"))
+                        mutate(Conseguido = recode(Evaluación, "0" = "No", "0.25" = "Parcialmente", "0.5" = "Parcialmente", "0.75" = "Parcialmente", "1.0" = "Si"))
                     if (data.student$Presentado[1] == "S"){
                         student.name <- paste0(data.student$Apellidos[1], ', ', data.student$Nombre[1])
                         output.file <-  paste0("evaluacion ", student.name, ".html")
@@ -409,7 +410,7 @@ server <- function(input, output) {
                     # send.assessment(i,emails[emails$Name == i,]$`Nombre de usuario`)
                     # Sys.sleep(10)
                     # Increment the progress bar, and update the detail text.
-                    incProgress(1/n, detail = student.name)
+                    incProgress(1/n, detail = student)
                 }
             })
             zip(file, files)
