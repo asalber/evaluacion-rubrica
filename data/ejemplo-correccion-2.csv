@@ -1,0 +1,32 @@
+Apellidos,Nombre,Nombre de usuario,Presentado,Get the frequency distribution from a frequency chart,Compute the quartiles from the frequency table for non-grouped data,Compute the interquartile range,Compute the fences,Detect outliers,Draw the box and whiskers plot,Interpret the box and whiskers plot,Compute the mean from sums,Compute the median from the frequency table for non-grouped data,Compute the mode from the frequency table,Compute the variance from sums,Compute the standard deviation,Compute the coef of skewness from sums,Interpret the coef of skewness,Compute the coef of kurtosis from sums,Interpret the coef of kurtosis,Check if the sample comes from a normal population,Compute the coef of variation,Compare the relative dispersion of two samples,Apply standardization,Compare the standard scores,Compute the covariance,Interpret the covariance,Compute the coef of regression,Interpret the coef of regression,Identify the roles (dependent or independent) of variables in a regression model,Compute the regression line,Compute a logarithmic regression model,Make predictions with regression models,Compute the coef of determination,Compare the goodness of fit of two regression models,Compute an exponential regression model,"Interpret the reliability of a prediction depending on the coef of determination, the sample size and the range of values in the sample",Comentarios
+PESO,,,,3,2,1,1,1,1,1,2,2,1,2,1,2,2,2,2,2,2,3,2,2,2,2,2,2,3,3,3,1,2,3,3,3,
+Apellidos1,Nombre1,Apellidos1@ceu.es,S,,1,1,1,1,0.5,,1,,1,1,1,,1,,1,1,1,,,,1,,1,1,1,1,1,1,1,1,,,
+Apellidos2,Nombre2,Apellidos2@ceu.es,S,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,
+Apellidos3,Nombre3,Apellidos3@ceu.es,S,1,1,1,,1,1,,1,1,1,,1,,,,,,1,,,,,,,,,0.5,,,,,,,"You have trouble to apply the formulas for the variance, coef of skewness and coef of kurtosis."
+Apellidos4,Nombre4,Apellidos4@ceu.es,S,,,,,,0.5,,1,,,1,1,1,,1,,1,1,1,1,1,1,,1,1,1,1,,0.5,,,,,
+Apellidos5,Nombre5,Apellidos5@ceu.es,S,,,,,,,,1,1,1,,,1,,1,,,,,,,,,,,,,,,,,,,
+Apellidos6,Nombre6,Apellidos6@ceu.es,S,,,1,1,,0.5,,1,,,1,1,1,,1,,1,1,,1,,1,,,,1,1,0.5,1,1,1,,,
+Apellidos7,Nombre7,Apellidos7@ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Apellidos8,Nombre8,Apellidos8@ceu.es,S,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,,,,
+Apellidos9,Nombre9,Apellidos9@ceu.es,S,0.5,1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,,,1,,,,,1,,1,,,,,
+Apellidos10,Nombre10,Apellidos10@ceu.es,S,1,1,1,1,1,1,1,1,1,,1,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+Apellidos11,Nombre11,Apellidos11@ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Apellidos12,Nombre12,Apellidos12@ceu.es,S,0.5,1,1,,,0.5,,1,1,1,,,,,,,,,,,,1,,,,,,,,,,,,
+Apellidos13,Nombre13,Apellidos13@ceu.es,S,0.5,1,1,1,,0.5,,1,1,1,0.5,1,,,,,,1,,,,1,1,,,0.5,1,1,1,1,1,1,1,
+Apellidos14,Nombre14,Apellidos14@ceu.es,S,1,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,1,,1,1,,,,,,,,,,,,,
+Apellidos15,Nombre15,Apellidos15@ceu.es,S,1,1,1,1,,0.5,,1,,1,1,1,1,1,1,1,1,0.5,,0.5,1,1,,1,1,1,1,1,1,1,1,1,0.5,
+Apellidos16,Nombre16,Apellidos16@ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Apellidos17,Nombre17,Apellidos17@ceu.es,S,0.5,,1,1,1,,,1,,,1,1,,,,,,,,,0.5,1,,1,1,1,1,,1,,,,,
+Apellidos18,Nombre18,Apellidos18@ceu.es,S,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,1,1,1,1,,1,1,1,,,
+Apellidos19,Nombre19,Apellidos19@ceu.es,S,,0.5,1,1,,0.5,,1,0.5,,1,1,1,1,1,1,1,1,0.5,,,0,,0,0,,0,,0,,,,,You have made a big mistake because a variance can not be negative. So I have canceled the second exercise.
+Apellidos20,Nombre20,Apellidos20@ceu.es,S,1,1,1,1,,1,,1,1,1,1,1,1,1,1,1,1,1,0.5,1,1,1,1,1,1,0.5,1,1,1,1,1,,0.5,
+Apellidos21,Nombre21,Apellidos21@ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Apellidos22,Nombre22,Apellidos22@ceu.es,S,,,,1,1,0.5,,1,,,0.5,1,1,1,1,1,1,1,,0.5,,1,,,,,1,1,1,1,,,,
+Apellidos23,Nombre23,Apellidos23@ceu.es,S,,,,,,,,1,,,1,,,,,,,,,,,1,1,,,0.5,1,0.5,,,,,,
+Apellidos24,Nombre24,Apellidos24@ceu.es,S,1,1,1,1,,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,,0,0,0,0,0,0,0,0,0,,,,You have made a big mistake because the coef of determination can not be greater than 1. So I have canceled the second exercise.
+Apellidos25,Nombre25,Apellidos25@ceu.es,S,0.5,1,1,,,0.5,,1,,,1,1,1,1,1,1,,1,,0.5,1,0,,0,,0,0,0,0,0,0,0,,You have made a big mistake because a variance can not be negative. So I have canceled the second exercise.
+Apellidos26,Nombre26,Apellidos26@ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Apellidos27,Nombre27,Apellidos27@ceu.es,S,0.5,0.5,1,1,,0.5,,1,,,1,1,1,1,1,1,0.5,1,1,1,1,1,,,,1,1,0.5,0.5,1,1,,,
+Apellidos28,Nombre28,Apellidos28@ceu.es,S,,1,1,1,1,0.5,,1,,,,1,1,1,0.5,,,1,1,0.5,,0.5,,,,,0.5,,,,,,,You did not use the sums that I gave you in the exercises.
+Apellidos29,Nombre29,Apellidos29@ceu.es,S,1,1,1,1,1,1,1,1,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+Apellidos30,Nombre30,Apellidos30@ceu.es,N,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
