@@ -20,6 +20,7 @@ library(kableExtra)
 ```{r data preparation}
 # Compute the grade
 data.student <- as_tibble(params$data.student)
+data.student <- data.student %>% mutate(Comentarios = as.character(Comentarios))
 total.weight <- sum(data.student$Peso)
 grade <- sum(data.student$Puntos) / total.weight * 10
 ```

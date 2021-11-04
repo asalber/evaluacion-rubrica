@@ -227,6 +227,8 @@ server <- function(input, output) {
             data <- read_csv2(inFile$datapath, locale = locale(encoding = encoding))
         else 
             data <- read_csv(inFile$datapath, locale = locale(encoding = encoding))
+        # Convert the comments column to character (if not when there are no comments the column is loaded as logical)
+        data <- data %>% mutate(Comentarios = as.character(Comentarios))
         # Extract the weights of the questions
         weights <- data %>%
             filter(Apellidos == "PESO") %>%
@@ -363,10 +365,8 @@ server <- function(input, output) {
     # Show comments
     output$comments <- renderUI({
         req(input$student)
-        grades <- grades()
-        grade <- grades %>% filter(Apellidos == input$student) %>% pull(Nota)
         data.student <- data.student()
-        tagList(h3("Comentarios"), p(if_else(is.na(data.student$Comentarios[1]), '', data.student$Comentarios[1])))
+        tagList(h3("Comentarios"), p(ifelse(is.na(data.student$Comentarios[1]), '', data.student$Comentarios[1])))
     })
     
     # Generate reports
