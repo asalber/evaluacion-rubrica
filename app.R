@@ -196,7 +196,7 @@ server <- function(input, output) {
     output$downloadRubricTemplate <- downloadHandler(
         filename = paste0(input$examName, "-plantilla.csv"),
         content = function(file) {
-            rubric <- selected.items() %>%
+          rubric <- selected.items() %>%
                 pivot_wider(id_cols=c(), names_from = Item, values_from = Peso) %>%
                 add_column(Comentarios = "", Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%

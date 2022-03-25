@@ -1,0 +1,13 @@
+name: evaluacion-rubrica
+title: evaluacion-rubrica
+username:
+account: asalberapps
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5935579
+bundleId: 5727249
+url: https://asalberapps.shinyapps.io/evaluacion-rubrica/
+when: 1648224501.33166
+lastSyncTime: 1648224501.3317
+asMultiple: FALSE
+asStatic: FALSE
