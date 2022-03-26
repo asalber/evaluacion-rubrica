@@ -102,22 +102,8 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
     )
 )
 
-# Define server logic required to draw a histogram
-library(logging)
-basicConfig()
-options(shiny.error = function() { 
-  logging::logerror(sys.calls() %>% as.character %>% paste(collapse = ", ")) })
-
 
 server <- function(input, output) {
-  # Log via logging
-  printLogJs <- function(x, ...) {
-    logjs(x)
-    T
-  }
-
-  addHandler(printLogJs)
-  
     # Encoding items
     encoding.items <- reactive({
         encoding <- unlist(guess_encoding(input$items.file$datapath))[1]
@@ -210,6 +196,7 @@ server <- function(input, output) {
         filename = paste0(input$examName, "-plantilla.csv"),
         content = function(file) {
           rubric <- selected.items() %>%
+                mutate(Peso = as.character(Peso)) %>%
                 pivot_wider(id_cols=c(), names_from = Item, values_from = Peso) %>%
                 add_column(Comentarios = "", Apellidos = "PESO", Nombre = "", `Nombre de usuario` = "", Presentado = "") %>%
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%
