@@ -103,8 +103,21 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
 )
 
 # Define server logic required to draw a histogram
+library(logging)
+basicConfig()
+options(shiny.error = function() { 
+  logging::logerror(sys.calls() %>% as.character %>% paste(collapse = ", ")) })
+
 
 server <- function(input, output) {
+  # Log via logging
+  printLogJs <- function(x, ...) {
+    logjs(x)
+    T
+  }
+
+  addHandler(printLogJs)
+  
     # Encoding items
     encoding.items <- reactive({
         encoding <- unlist(guess_encoding(input$items.file$datapath))[1]
@@ -202,7 +215,7 @@ server <- function(input, output) {
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%
                 # Add students
                 add_row( data.students()) %>%
-                mutate_all(funs(replace_na(., "")))
+                mutate_all(~replace_na(., ""))
             encoding <- encoding.items()
             if (encoding == "ISO-8859-1")
                 write_csv2(rubric, file)
