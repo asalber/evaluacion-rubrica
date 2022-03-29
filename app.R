@@ -202,7 +202,7 @@ server <- function(input, output) {
                 relocate(Apellidos, Nombre, `Nombre de usuario`, Presentado) %>%
                 # Add students
                 add_row( data.students()) %>%
-                mutate_all(~replace_na(., ""))
+                mutate(across(everything(), ~replace_na(., "")))
             encoding <- encoding.items()
             if (encoding == "ISO-8859-1")
                 write_csv2(rubric, file)
@@ -366,8 +366,7 @@ server <- function(input, output) {
     output$comments <- renderUI({
         req(input$student)
         data.student <- data.student()
-        tagList(h3("Comentarios"), p(ifelse(is.na(data.student$Comentarios[1]), '', data.student$Comentarios[1])))
-    })
+        if (!is.na(data.student$Comentarios[1])) tagList(h3("Comentarios"), p(data.student$Comentarios[1]))    })
     
     # Generate reports
     output$downloadReports <- downloadHandler(
@@ -394,7 +393,7 @@ server <- function(input, output) {
                         replace_na(list(Evaluación = 0)) %>%
                         # Add a new columns with the Puntos
                         mutate(Puntos = Peso * Evaluación) %>%
-                        # Add a new column with Achivement
+                        # Add a new column with Achievement
                         mutate(Conseguido = recode(Evaluación, "0" = "No", "0.25" = "Parcialmente", "0.5" = "Parcialmente", "0.75" = "Parcialmente", "1.0" = "Si"))
                     if (data.student$Presentado[1] == "S"){
                         student.name <- paste0(data.student$Apellidos[1], ', ', data.student$Nombre[1])
